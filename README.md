@@ -1,12 +1,20 @@
 # 🕳️ Black Hole
 
-### Multi-Tab Workspace & Browser Session Manager for Google Chrome
+### Multi-Tab Workspace Manager for Google Chrome
 
-**Black Hole** is a modern Google Chrome extension that helps you organize, save, and restore groups of browser tabs as reusable **Capsules**.
+**Black Hole** is a modern Chrome Extension that lets you save multiple websites together as named **Capsules**, reopen them whenever you need, and keep those capsules synchronized with the browser workspace as you work.
 
-Instead of keeping dozens of tabs open, you can save a complete group of websites into a named workspace and reopen them whenever you need them.
+Instead of repeatedly opening the same collection of websites, you can create a capsule such as:
 
-> **Open → Organize → Save → Close → Restore**
+* 🎓 College
+* 💼 Work
+* 💻 Project Development
+* 📚 Placement Preparation
+* 🔬 Research
+* 🎵 Personal
+* 🎮 Entertainment
+
+Open a capsule once, continue working, and Black Hole can keep the capsule updated with the changes made to its active tabs.
 
 ---
 
@@ -16,32 +24,31 @@ Instead of keeping dozens of tabs open, you can save a complete group of website
 
 * Create unlimited capsules
 * Give each capsule a custom name
-* Add a description
-* Choose an icon
-* Choose a capsule color
+* Add descriptions
+* Choose capsule icons
+* Choose capsule colors
 * Rename capsules
 * Duplicate capsules
-* Delete capsules safely
-* Mark favorite capsules
+* Delete capsules
+* Favorite/pin capsules where supported
 * Search capsules by name or description
 
-### 🌐 Tab Management
+---
 
-* Save all current browser tabs
-* Save selected websites into a capsule
-* Add the current tab to an existing capsule
-* Remove individual websites
-* Reorder websites using drag and drop
-* Preserve website order
-* Detect duplicate URLs
-* Display website favicons
-* Handle unavailable or unsupported pages safely
+### 🌐 Save Multiple Websites
 
-### 🚀 Restore Workspaces
+Save multiple currently open Chrome tabs into one capsule.
 
-Open an entire workspace with one click.
+Each saved website can contain:
 
-For example:
+* Website title
+* URL
+* Favicon
+* Tab order
+* Pinned state
+* Unique website ID
+
+Example:
 
 ```text
 Placement Preparation
@@ -50,163 +57,674 @@ Placement Preparation
 ├── HackerRank
 ├── GitHub
 ├── Gmail
-├── LinkedIn
-└── ChatGPT
+├── ChatGPT
+└── Google Docs
 ```
 
-Click **Open Capsule** and Black Hole restores the websites in their saved order.
+---
 
-You can also open a capsule in a **new Chrome window**.
+# 🔄 Live Capsule Synchronization
 
-### 💾 Save & Close
+One of the main features of the latest Black Hole version is **live workspace synchronization**.
 
-Black Hole provides a safe:
+When you open a capsule, Black Hole can track the websites belonging to that active capsule.
 
-**Save & Close**
+This means the capsule can evolve as you work.
 
-workflow.
+### Example
+
+Suppose your capsule contains:
 
 ```text
-Current Tabs
-     ↓
-Save Successfully
-     ↓
-Verify Storage
-     ↓
-Close Tabs
+My Project
+
+├── GitHub
+├── Google Docs
+└── Gmail
 ```
 
-Tabs are never closed before the capsule is successfully saved.
+You open the capsule.
 
-### 🔍 Search
+Then you open:
 
-Quickly find capsules using:
+```text
+Stack Overflow
+```
 
-* Capsule name
+Black Hole can update the capsule:
+
+```text
+My Project
+
+├── GitHub
+├── Google Docs
+├── Gmail
+└── Stack Overflow
+```
+
+If you later close Google Docs, the workspace state can be synchronized so the capsule reflects the current workspace.
+
+If you navigate a tracked tab from:
+
+```text
+GitHub
+```
+
+to:
+
+```text
+Stack Overflow
+```
+
+the capsule can update the corresponding website information.
+
+### Workspace concept
+
+```text
+OPEN CAPSULE
+      ↓
+TRACK CAPSULE TABS
+      ↓
+USER WORKS WITH TABS
+      ↓
+ADD / REMOVE / NAVIGATE
+      ↓
+CAPSULE UPDATED
+      ↓
+OPEN CAPSULE AGAIN
+      ↓
+LATEST WORKSPACE RESTORED
+```
+
+This turns a capsule from a simple saved list into a **browser workspace that can evolve over time**.
+
+---
+
+# 🧹 Smart URL Deduplication
+
+Black Hole automatically normalizes and removes duplicate website URLs when storing capsule websites.
+
+For example:
+
+```text
+https://github.com
+https://github.com/
+https://github.com/#home
+```
+
+are treated as equivalent where the normalization rules apply.
+
+Instead of storing:
+
+```text
+GitHub
+GitHub
+GitHub
+```
+
+Black Hole keeps a single entry.
+
+### Result
+
+```text
+Before:
+
+GitHub
+GitHub
+GitHub
+Gmail
+Gmail
+
+After:
+
+GitHub
+Gmail
+```
+
+This keeps capsules clean and prevents unnecessary duplicate tabs.
+
+---
+
+# 📑 Sorted Website Storage
+
+When websites are added or updated, Black Hole cleans and sorts the stored URL list.
+
+This provides deterministic storage and makes the capsule easier to maintain.
+
+Example:
+
+```text
+Before:
+
+YouTube
+GitHub
+Google
+ChatGPT
+
+After:
+
+ChatGPT
+GitHub
+Google
+YouTube
+```
+
+Duplicate URLs are removed before sorting.
+
+---
+
+# 🚫 Already-Open Website Detection
+
+Black Hole checks the websites currently open in Chrome before opening a capsule.
+
+If a website from the capsule is already open, Black Hole does **not** create another copy.
+
+### Example
+
+Capsule:
+
+```text
+GitHub
+Gmail
+ChatGPT
+YouTube
+```
+
+Currently open:
+
+```text
+Chrome
+├── GitHub
+└── Gmail
+```
+
+When the capsule is opened:
+
+```text
+GitHub       → Already open → Skip
+Gmail        → Already open → Skip
+ChatGPT      → Open
+YouTube      → Open
+```
+
+Result:
+
+```text
+2 websites opened
+2 websites already open
+```
+
+This prevents unnecessary duplicate tabs.
+
+---
+
+# 🌍 Cross-Window Duplicate Detection
+
+The already-open URL check is not limited to the current Chrome window.
+
+Black Hole checks tabs across Chrome windows.
+
+For example:
+
+```text
+Window 1
+├── Gmail
+└── YouTube
+
+Window 2
+├── GitHub
+└── Google Docs
+```
+
+If a capsule contains all four websites, Black Hole recognizes that they are already open and avoids creating duplicates.
+
+---
+
+# 💾 Save Current Tabs
+
+Use:
+
+```text
+Save Current Tabs
+```
+
+to save the websites currently open in the active Chrome window.
+
+Black Hole:
+
+1. Reads the current tabs
+2. Filters unsupported Chrome pages
+3. Normalizes URLs
+4. Removes duplicates
+5. Sorts the websites
+6. Saves the updated capsule
+
+---
+
+# 🔒 Save & Close
+
+Black Hole provides:
+
+```text
+Save & Close
+```
+
+The operation follows a safe order:
+
+```text
+READ TABS
+   ↓
+SAVE CAPSULE
+   ↓
+CONFIRM STORAGE
+   ↓
+CLOSE TABS
+```
+
+The tabs are **not closed before the capsule is successfully saved**.
+
+This helps prevent accidental data loss.
+
+---
+
+# 🚀 Open Capsule
+
+Click:
+
+```text
+Open Capsule
+```
+
+to restore the websites belonging to a capsule.
+
+Black Hole:
+
+1. Loads the saved capsule
+2. Cleans duplicate URLs
+3. Normalizes URLs
+4. Checks currently open tabs
+5. Skips websites already open
+6. Opens remaining websites
+7. Continues even if one website fails
+8. Updates capsule opening information
+
+Example:
+
+```text
+Capsule
+   ↓
+Check existing tabs
+   ↓
+Remove duplicates
+   ↓
+Skip already-open websites
+   ↓
+Open remaining websites
+   ↓
+Update capsule
+```
+
+---
+
+# 🪟 Open in New Window
+
+Capsules can also be opened in a new Chrome window.
+
+Example:
+
+```text
+Black Hole
+     ↓
+Open Capsule in New Window
+     ↓
+New Chrome Window
+├── GitHub
+├── Gmail
+├── ChatGPT
+└── Google Docs
+```
+
+Already-open websites are still detected and skipped according to the capsule-opening rules.
+
+---
+
+# ✏️ Edit Capsules
+
+Capsules can be modified after creation.
+
+Supported operations include:
+
+* Rename capsule
+* Change description
+* Change icon
+* Change color
+* Add websites
+* Remove websites
+* Add current tab
+* Reorder websites where supported
+* Duplicate capsule
+* Open capsule
+* Open in new window
+* Export capsule
+* Delete capsule
+
+---
+
+# 🔗 Add Current Tab
+
+The current browser tab can be added directly to an existing capsule.
+
+Before storing it, Black Hole checks for duplicates.
+
+Example:
+
+```text
+Capsule:
+
+GitHub
+Gmail
+ChatGPT
+```
+
+Current tab:
+
+```text
+GitHub
+```
+
+Black Hole detects that GitHub already exists and prevents unnecessary duplication.
+
+---
+
+# 🗑️ Remove Websites
+
+Individual websites can be removed from a capsule without deleting the entire capsule.
+
+Removing a website from the saved capsule does **not** automatically close the corresponding browser tab.
+
+---
+
+# 📋 Capsule Duplication
+
+Capsules can be duplicated.
+
+Example:
+
+```text
+Project Development
+        ↓
+Duplicate
+        ↓
+Project Development Copy
+```
+
+The duplicated capsule receives its own unique ID and can be modified independently.
+
+---
+
+# 🔍 Capsule Search
+
+Search capsules by:
+
+* Name
 * Description
 
-Search results update dynamically as you type.
+Example:
 
-### 🌙 Dark & Light Mode
+```text
+Search: project
+```
 
-Black Hole supports:
+Possible results:
 
-* System theme
-* Light mode
+```text
+Project Development
+AI Project
+College Project
+```
+
+---
+
+# 🌙 Dark & Light Mode
+
+Black Hole supports a modern interface with:
+
 * Dark mode
+* Light mode
+* System preference
 
-The default theme follows the operating system preference.
+The interface uses CSS variables and responsive styling to maintain consistent appearance.
 
-### 📤 Import & Export
+---
 
-Export your capsules as JSON.
+# 📊 Capsule Information
+
+Capsule cards can display information such as:
+
+```text
+🚀 Placement Preparation
+
+8 websites
+
+Last opened:
+Today, 2:30 PM
+```
+
+Depending on the enabled features, capsule information can include:
+
+* Website count
+* Last opened time
+* Open count
+* Favorite status
+* Capsule icon
+* Capsule color
+
+---
+
+# 💾 Local Storage
+
+Black Hole stores capsule information locally using:
+
+```javascript
+chrome.storage.local
+```
+
+The extension does not require a backend server for its core functionality.
+
+Conceptual data structure:
+
+```javascript
+{
+    capsules: [
+        {
+            id: "unique-id",
+            name: "Placement Preparation",
+            description: "Placement preparation websites",
+            icon: "🎓",
+            color: "#6366f1",
+
+            websites: [
+                {
+                    id: "website-id",
+                    title: "LeetCode",
+                    url: "https://leetcode.com/",
+                    favicon: "...",
+                    pinned: false,
+                    order: 0
+                }
+            ],
+
+            createdAt: 123456789,
+            updatedAt: 123456789,
+            lastOpenedAt: 123456789,
+            openCount: 5
+        }
+    ]
+}
+```
+
+Other capsules are preserved when one capsule is modified.
+
+---
+
+# 🔐 Privacy
+
+Black Hole is designed around local-first storage.
+
+The extension does **not intentionally collect**:
+
+* Passwords
+* Cookies
+* Browsing history
+* Website content
+* Personal information
+
+Saved capsule data remains in Chrome's local extension storage.
+
+No external backend server is required for the current version.
+
+The extension only works with website information required for its capsule functionality.
+
+---
+
+# 🛡️ Security
+
+Black Hole follows Chrome Extension security practices.
+
+The project avoids:
+
+```javascript
+eval()
+```
+
+and unsafe dynamic script execution.
+
+The extension does not intentionally inject arbitrary remote JavaScript.
+
+User-controlled content should be handled using safe DOM APIs such as:
+
+```javascript
+textContent
+```
+
+where appropriate.
+
+---
+
+# ⚡ Performance
+
+Black Hole is designed to remain lightweight.
+
+The project avoids unnecessary:
+
+* API calls
+* Storage operations
+* DOM rebuilding
+* External libraries
+* Network services
+
+The architecture is designed to support:
+
+```text
+5 capsules
+20 capsules
+100 capsules
+500+ websites
+```
+
+without requiring a backend.
+
+---
+
+# 🌐 Supported Website Handling
+
+Black Hole avoids saving unsupported/internal Chrome pages such as:
+
+```text
+chrome://
+chrome-extension://
+edge://
+about:
+```
+
+These pages generally cannot be restored like normal websites.
+
+Unsupported URLs are skipped rather than causing the entire save operation to fail.
+
+---
+
+# ⭐ Favicons
+
+Black Hole displays website favicons where available.
+
+If a favicon cannot be loaded, a fallback icon can be displayed instead.
+
+Example:
+
+```text
+🌐
+```
+
+A missing favicon should not prevent the website from being stored or opened.
+
+---
+
+# 📥 Import & Export
+
+Capsules can be exported as JSON.
 
 Example:
 
 ```json
 {
-  "version": 1,
-  "exportedAt": 123456789,
-  "capsules": []
+    "version": 1,
+    "exportedAt": 123456789,
+    "capsules": []
 }
 ```
 
-You can later import the file and restore your saved workspaces.
+Import validation checks the structure of the imported data before restoring capsules.
 
-### ⚙️ Settings
-
-The settings page provides options for:
-
-* Delete confirmation
-* Duplicate URL prevention
-* New-window behavior
-* Website count visibility
-* Last-opened information
-* Theme selection
-* Import
-* Export
-* Delete all capsules
+Invalid files should produce a friendly error instead of breaking the extension.
 
 ---
 
-# 🎯 Why Black Hole?
+# ⚙️ Settings
 
-The idea behind **Black Hole** is simple:
+The Options page can provide settings such as:
 
-> Put all your browser tabs into a workspace and pull them back whenever you need them.
+### General
 
-A capsule acts like a temporary digital workspace.
+* Ask before deleting capsules
+* Prevent duplicate URLs
+* Open capsules in a new window by default
+* Show website count
+* Show last opened time
 
-For example:
+### Appearance
 
 ```text
-🕳️ BLACK HOLE
-
-Capsules
-
-🚀 Placement Preparation
-💻 Project Development
-🎓 College
-🔬 Research
-💼 Work
-🎵 YouTube
-🛒 Shopping
+System
+Light
+Dark
 ```
 
-Each capsule stores its own collection of websites.
-
----
-
-# 🛠️ Technology Stack
-
-Black Hole is built using standard Chrome Extension technologies.
-
-| Technology            | Purpose                       |
-| --------------------- | ----------------------------- |
-| HTML5                 | Extension UI                  |
-| CSS3                  | Styling and responsive design |
-| JavaScript ES6+       | Application logic             |
-| Chrome Extensions API | Browser integration           |
-| Manifest V3           | Extension architecture        |
-| `chrome.tabs`         | Tab management                |
-| `chrome.storage`      | Local data storage            |
-| `chrome.windows`      | Window management             |
-| `chrome.commands`     | Keyboard shortcuts            |
-
-No backend server is required.
-
----
-
-# 🔒 Privacy
-
-Black Hole is designed as a **local-first extension**.
-
-Saved capsule information is stored locally using:
+### Data
 
 ```text
-chrome.storage.local
+Export Capsules
+Import Capsules
+Delete All Capsules
 ```
 
-Black Hole does **not**:
-
-* Collect browsing history
-* Collect passwords
-* Collect cookies
-* Collect website content
-* Send saved URLs to an external server
-* Use Firebase
-* Use a database server
-* Require a backend
-* Track user activity
-
-The extension only saves websites when the user explicitly chooses to save them.
+Destructive operations require confirmation.
 
 ---
 
-# 📁 Project Structure
+# 🏗️ Project Structure
 
 ```text
-BlackHole/
+ChromeCapsule/
 │
 ├── manifest.json
 │
@@ -233,51 +751,125 @@ BlackHole/
 │   ├── icon48.png
 │   └── icon128.png
 │
-├── package/
-│   └── README.md
+├── README.md
 │
-└── README.md
+└── package/
+    └── README.md
 ```
 
 ---
 
-# 🚀 Installation
+# 🧩 Architecture
 
-## 1. Download the Project
+Black Hole separates its main responsibilities.
 
-Clone the repository:
-
-```bash
-git clone https://github.com/YOUR-USERNAME/black-hole.git
+```text
+                BLACK HOLE
+                     │
+        ┌────────────┼────────────┐
+        │            │            │
+      Popup       Storage        Tabs
+        │            │            │
+        ↓            ↓            ↓
+      UI       chrome.storage   Chrome APIs
+        │            │            │
+        └────────────┼────────────┘
+                     │
+               Capsule State
+                     │
+                     ↓
+              Live Workspace
 ```
 
-Or download the repository as a ZIP file.
+### `popup/`
+
+Responsible for:
+
+* User interface
+* Capsule cards
+* Search
+* Buttons
+* Modals
+* User interactions
+
+### `utils/storage.js`
+
+Responsible for:
+
+* Reading capsules
+* Saving capsules
+* Updating capsules
+* Deleting capsules
+* Import/export support
+
+### `utils/tabs.js`
+
+Responsible for:
+
+* Reading browser tabs
+* Filtering supported URLs
+* URL normalization
+* Duplicate detection
+* Sorting
+* Opening websites
+* Detecting already-open websites
+* Workspace tab handling
+
+### `background/service-worker.js`
+
+Responsible for background Chrome Extension functionality and event-driven operations where required.
+
+### `options/`
+
+Responsible for:
+
+* Settings
+* Import/export
+* Appearance preferences
+* Data management
 
 ---
 
-## 2. Open Chrome Extensions
+# 🔧 Installation
 
-Open Google Chrome and navigate to:
+## 1. Download the project
+
+Download or clone the Black Hole project.
+
+## 2. Extract the project
+
+Extract the ZIP file.
+
+You should have a structure similar to:
+
+```text
+BlackHole/
+└── ChromeCapsule/
+    ├── manifest.json
+    ├── popup/
+    ├── background/
+    ├── options/
+    ├── utils/
+    └── icons/
+```
+
+## 3. Open Chrome Extensions
+
+Open:
 
 ```text
 chrome://extensions
 ```
 
----
+## 4. Enable Developer Mode
 
-## 3. Enable Developer Mode
-
-Enable:
+Turn on:
 
 ```text
 Developer mode
 ```
 
-from the top-right corner.
-
----
-
-## 4. Load the Extension
+## 5. Load the extension
 
 Click:
 
@@ -285,444 +877,243 @@ Click:
 Load unpacked
 ```
 
-Select the extracted:
+Select:
 
 ```text
-BlackHole
+ChromeCapsule
 ```
 
-project folder.
-
----
-
-## 5. Pin Black Hole
-
-Click the Chrome Extensions icon:
+the folder containing:
 
 ```text
-🧩
+manifest.json
 ```
 
-Find:
+## 6. Pin Black Hole
 
-```text
-Black Hole
-```
-
-and pin it to the toolbar.
-
----
-
-# 📖 Usage
-
-## Create a Capsule
-
-1. Open the websites you want to save.
-2. Click the **Black Hole** extension.
-3. Click:
-
-```text
-+ New Capsule
-```
-
-4. Enter a capsule name.
-5. Optionally add a description.
-6. Select an icon and color.
-7. Create the capsule.
-8. Save the current tabs.
-
----
-
-## Save Current Tabs
-
-Open the websites you want to keep.
-
-Example:
-
-```text
-GitHub
-ChatGPT
-Google Docs
-Gmail
-LeetCode
-```
-
-Open Black Hole and select:
-
-```text
-Save Current Tabs
-```
-
-The websites are stored inside the selected capsule.
-
----
-
-# 💾 Save & Close
-
-If you want to save your current work and close the tabs:
-
-```text
-Save & Close
-```
-
-Black Hole first saves the websites.
-
-Only after successful storage does it close the tabs.
-
-This prevents accidental data loss.
-
----
-
-# 🔄 Open a Capsule
-
-Open Black Hole.
-
-Find your capsule:
-
-```text
-🚀 Placement Preparation
-```
-
-Click:
-
-```text
-Open Capsule
-```
-
-All saved websites will be reopened.
-
----
-
-# 🪟 Open in New Window
-
-You can also choose:
-
-```text
-Open in New Window
-```
-
-Black Hole creates a new Chrome window and restores the capsule inside it.
-
-Example:
-
-```text
-Black Hole
-     ↓
-Placement Capsule
-     ↓
-New Chrome Window
-     ├── LeetCode
-     ├── GitHub
-     ├── Gmail
-     ├── LinkedIn
-     └── ChatGPT
-```
-
----
-
-# ✏️ Edit a Capsule
-
-Each capsule provides additional actions.
-
-Available operations include:
-
-```text
-Rename
-Edit Websites
-Add Current Tab
-Remove Website
-Duplicate
-Open
-Open in New Window
-Export
-Delete
-```
-
----
-
-# 🔀 Reorder Websites
-
-Inside the capsule editor, websites can be reordered using drag and drop.
-
-Example:
-
-### Before
-
-```text
-GitHub
-Google
-ChatGPT
-YouTube
-```
-
-### After
-
-```text
-ChatGPT
-GitHub
-YouTube
-Google
-```
-
-The new order is preserved when the capsule is opened.
-
----
-
-# ➕ Add Current Tab
-
-To add the currently active website:
-
-```text
-Current Tab
-    ↓
-Select Capsule
-    ↓
-Add
-```
-
-If the website already exists, Black Hole warns about the duplicate.
-
----
-
-# 🗑️ Delete a Capsule
-
-Deleting a capsule requires confirmation.
-
-```text
-Delete "Project Development"?
-
-This will remove the saved capsule and its websites.
-
-[Cancel] [Delete]
-```
-
-Deleting a capsule **does not close any currently open Chrome tabs**.
-
-It only removes the saved capsule.
-
----
-
-# 📋 Duplicate a Capsule
-
-A capsule can be duplicated.
-
-Example:
-
-```text
-Project Development
-        ↓
-    Duplicate
-        ↓
-Project Development Copy
-```
-
-The original capsule remains unchanged.
-
----
-
-# 📤 Export Capsules
-
-Go to:
-
-```text
-Settings
-    ↓
-Export Capsules
-```
-
-Black Hole generates a JSON file containing the saved capsules.
-
-This can be used as a backup.
-
----
-
-# 📥 Import Capsules
-
-Go to:
-
-```text
-Settings
-    ↓
-Import Capsules
-```
-
-Select a valid Black Hole JSON export.
-
-The extension validates:
-
-* JSON structure
-* Version
-* Capsule data
-* Website data
-* URLs
-* Required fields
-
-Invalid files are rejected safely.
-
----
-
-# 🌙 Theme
-
-Black Hole supports:
-
-```text
-System
-Light
-Dark
-```
-
-### System
-
-Automatically follows your operating system.
-
-### Light
-
-Uses the light interface.
-
-### Dark
-
-Uses the dark interface.
-
----
-
-# ⌨️ Keyboard Shortcut
-
-Black Hole supports Chrome extension commands where supported by Chrome.
-
-The shortcut can be configured from:
-
-```text
-chrome://extensions/shortcuts
-```
-
-Chrome controls the final shortcut assignment and availability.
+Open the Chrome Extensions menu and pin **Black Hole** to the toolbar.
 
 ---
 
 # 🧪 Testing
 
-Before considering the extension ready for production, test the following.
+## Test 1 — Create Capsule
 
-### Test 1 — Create Capsule
+Open several websites.
 
-Open 3 websites and save them.
+Create:
+
+```text
+My Work
+```
+
+Save the current tabs.
 
 Expected:
 
 ```text
-Capsule created
-3 websites saved
+My Work
+├── Website 1
+├── Website 2
+└── Website 3
 ```
 
-### Test 2 — Open Capsule
+---
+
+## Test 2 — Open Capsule
+
+Close the saved tabs.
 
 Open the capsule.
 
 Expected:
 
 ```text
-3 websites reopen
+All saved websites reopen.
 ```
 
-### Test 3 — Save & Close
+---
+
+## Test 3 — Already-Open Detection
+
+Open one saved website manually.
+
+Then open the capsule.
 
 Expected:
 
 ```text
-Tabs saved
+Already-open website → skipped
+Remaining websites → opened
+```
+
+No unnecessary duplicate tab should be created.
+
+---
+
+## Test 4 — Duplicate URLs
+
+Try adding:
+
+```text
+https://github.com
+```
+
+and:
+
+```text
+https://github.com/
+```
+
+Expected:
+
+```text
+Only one GitHub entry is stored.
+```
+
+---
+
+## Test 5 — Add Website to Active Workspace
+
+Open a capsule.
+
+Then open another supported website.
+
+Expected:
+
+```text
+New website
+     ↓
+Detected by workspace synchronization
+     ↓
+Capsule updated
+```
+
+---
+
+## Test 6 — Navigate a Tracked Tab
+
+Open a capsule.
+
+Navigate one tracked website to another URL.
+
+Expected:
+
+```text
+Old URL
+   ↓
+New URL
+   ↓
+Capsule updated
+```
+
+---
+
+## Test 7 — Close a Tracked Tab
+
+Open a capsule.
+
+Close one of its tracked tabs.
+
+Expected:
+
+```text
+Closed tab
+     ↓
+Workspace state updated
+```
+
+---
+
+## Test 8 — Save & Close
+
+Use:
+
+```text
+Save & Close
+```
+
+Expected:
+
+```text
+Save successfully
       ↓
-Tabs closed
+Tabs close
 ```
 
-### Test 4 — Delete Capsule
+Tabs should not be closed before saving succeeds.
+
+---
+
+## Test 9 — Delete Capsule
+
+Delete a capsule.
 
 Expected:
 
 ```text
-Capsule deleted
-Existing browser tabs remain open
+Capsule removed
 ```
 
-### Test 5 — Browser Restart
+Existing Chrome tabs must remain open.
+
+---
+
+## Test 10 — Browser Restart
 
 Restart Chrome.
 
 Expected:
 
 ```text
-Capsules remain available
+Saved capsules remain available.
 ```
 
-### Test 6 — Multiple Capsules
+---
 
-Create 10 capsules.
+## Test 11 — Search
+
+Create multiple capsules and search by name.
 
 Expected:
 
 ```text
-All capsules displayed correctly
+Only matching capsules appear.
 ```
 
-### Test 7 — Search
+---
 
-Search:
+## Test 12 — Invalid URL
 
-```text
-project
-```
+Add a problematic/invalid website.
 
 Expected:
 
 ```text
-Project Development
-AI Project
-College Project
-```
-
-### Test 8 — Duplicate URL
-
-Attempt to add an existing website.
-
-Expected:
-
-```text
-Duplicate website warning
-```
-
-### Test 9 — Invalid Import
-
-Import malformed JSON.
-
-Expected:
-
-```text
-Invalid capsule file
-```
-
-The extension should continue working.
-
-### Test 10 — Valid Import
-
-Import a valid backup.
-
-Expected:
-
-```text
-Capsules restored
-```
-
-### Test 11 — Invalid Website
-
-Open a capsule containing an invalid website.
-
-Expected:
-
-```text
-Invalid website skipped
+Invalid website
+      ↓
+Handled gracefully
+      ↓
 Other websites continue opening
 ```
 
-### Test 12 — Themes
+---
+
+## Test 13 — Import/Export
+
+Export capsules.
+
+Then import the generated JSON file.
+
+Expected:
+
+```text
+Capsules restored successfully.
+```
+
+---
+
+## Test 14 — Theme
 
 Test:
 
@@ -735,14 +1126,31 @@ Dark
 Expected:
 
 ```text
-UI remains readable and correctly styled
+UI remains readable and properly styled.
 ```
 
 ---
 
-# ⚠️ Chrome Limitations
+# ⚠️ Important Live-Sync Consideration
 
-Some browser pages cannot be treated like normal websites.
+Live workspace synchronization depends on identifying which browser tabs belong to the currently opened capsule.
+
+Therefore, Black Hole should treat an **active capsule session** carefully.
+
+A future refinement can provide:
+
+```text
+Auto-update capsule
+ON / OFF
+```
+
+This gives users control over automatic synchronization and prevents unwanted changes when they are working with unrelated tabs.
+
+---
+
+# 🚧 Known Limitations
+
+Chrome controls certain browser/internal pages that extensions cannot treat like normal websites.
 
 Examples include:
 
@@ -753,183 +1161,146 @@ edge://
 about:
 ```
 
-Black Hole handles unsupported/internal pages safely rather than pretending they can always be restored.
+These pages may not be suitable for capsule restoration.
 
-Chrome also controls extension permissions and keyboard shortcut behavior.
+Also, Chrome extension APIs impose restrictions on how tabs and windows can be monitored and manipulated.
 
----
+The live-sync system should therefore gracefully handle:
 
-# 🔐 Permissions
-
-Black Hole uses only the permissions required for its functionality.
-
-### `tabs`
-
-Required to:
-
-* Read the user's currently open tabs when explicitly saving
-* Retrieve tab URLs and metadata
-* Create tabs when restoring capsules
-* Close tabs after a successful Save & Close
-
-### `storage`
-
-Required to:
-
-* Store capsules
-* Store settings
-* Preserve data after Chrome restarts
-
-### `commands`
-
-Used for supported keyboard shortcuts.
-
-No unnecessary remote permissions or backend access are required.
+* Tabs being closed externally
+* Chrome restarting
+* Windows being closed
+* Unsupported URLs
+* Navigation failures
+* Permission limitations
+* Failed tab creation
 
 ---
 
-# 🏗️ Architecture
+# 🔮 Future Improvements
 
-Black Hole separates the major responsibilities of the extension.
+Possible future versions can add:
 
-```text
-                  ┌───────────────────┐
-                  │   Popup UI        │
-                  │ popup.js          │
-                  └─────────┬─────────┘
-                            │
-             ┌──────────────┼──────────────┐
-             ↓              ↓              ↓
-       ┌───────────┐  ┌───────────┐  ┌───────────┐
-       │ Storage   │  │ Tab       │  │ Helpers   │
-       │ Layer     │  │ Manager   │  │           │
-       └─────┬─────┘  └─────┬─────┘  └───────────┘
-             │              │
-             ↓              ↓
-       chrome.storage    chrome.tabs
-             │
-             ↓
-       Local Capsule Data
-```
+### ☁️ Cloud Synchronization
 
-This separation makes it easier to add future functionality without rewriting the complete extension.
+Sync capsules between devices.
 
----
-
-# 📊 Data Model
-
-A capsule follows a structure similar to:
-
-```javascript
-{
-    id: "unique-id",
-
-    name: "Placement Preparation",
-
-    description: "Websites used for placement preparation",
-
-    icon: "🎓",
-
-    color: "#6366f1",
-
-    websites: [
-        {
-            id: "website-id",
-            title: "LeetCode",
-            url: "https://leetcode.com/",
-            favicon: "...",
-            pinned: false,
-            order: 0
-        }
-    ],
-
-    createdAt: 123456789,
-
-    updatedAt: 123456789,
-
-    lastOpenedAt: 123456789,
-
-    openCount: 5
-}
-```
-
----
-
-# 🛡️ Security Principles
-
-Black Hole follows Chrome extension security best practices.
-
-The project avoids:
-
-```javascript
-eval()
-```
-
-and unsafe dynamic script execution.
-
-User-controlled values are handled using safe DOM APIs where possible.
-
-The extension does not inject arbitrary remote JavaScript.
-
----
-
-# 🌐 Offline First
-
-The extension itself does not require an internet connection.
-
-The extension operates locally using:
-
-```text
-Chrome Extension APIs
-        +
-chrome.storage.local
-```
-
-Internet access is only needed when the user chooses to open websites that themselves require an internet connection.
-
----
-
-# 🚧 Future Improvements
-
-The architecture allows future features such as:
-
-* Chrome Storage Sync
-* Cloud backup
-* Cross-device synchronization
-* Workspace sharing
-* Capsule collaboration
-* Automatic session detection
-* Automatic capsule updates
-* Capsule scheduling
-* Workspace statistics
-* Website categories
-* Custom keyboard shortcuts
-* Tab groups integration
-* Chrome Web Store distribution
-* Backup history
-* Capsule locking
-* Workspace notes
-* Recently closed capsule recovery
-
----
-
-# ☁️ Future Cloud Architecture
-
-Cloud synchronization is intentionally **not required in Version 1**.
-
-The current storage layer is isolated so future implementations could use:
+Possible architecture:
 
 ```text
 Black Hole
-     │
-     ├── Local Storage
-     │
-     └── Future Cloud Sync
-             │
-             ├── Authentication
-             ├── Database
-             └── Cross-device Sync
+     ↓
+Storage abstraction
+     ↓
+Chrome Storage Sync / Cloud
 ```
+
+The current storage layer is kept isolated so future synchronization can be added without completely rewriting the UI.
+
+### 🤖 Smart Workspace Detection
+
+Automatically identify groups of related websites.
+
+Example:
+
+```text
+GitHub
+Stack Overflow
+ChatGPT
+Google Docs
+```
+
+could be suggested as:
+
+```text
+Software Development
+```
+
+### 🕘 Workspace History
+
+Maintain previous capsule versions.
+
+Example:
+
+```text
+Project Work
+│
+├── Current
+├── Yesterday
+└── Last Week
+```
+
+### 📈 Capsule Statistics
+
+Example:
+
+```text
+Placement Preparation
+
+12 websites
+Opened 28 times
+Last opened today
+```
+
+### 🔄 Advanced Session Recovery
+
+Restore more workspace information such as:
+
+* Window relationships
+* Pinned state
+* Tab positions
+* Multiple windows
+* Workspace snapshots
+
+---
+
+# 📄 Permissions
+
+Black Hole uses Chrome permissions only where required.
+
+### `tabs`
+
+Used to:
+
+* Read currently open tabs
+* Obtain website URLs
+* Detect already-open websites
+* Open saved websites
+* Manage capsule workspace tabs
+
+### `storage`
+
+Used to:
+
+* Store capsules
+* Store settings
+* Preserve capsule information between browser sessions
+
+The extension does not require a traditional backend server.
+
+---
+
+# 🛠️ Development
+
+Black Hole uses:
+
+```text
+HTML5
+CSS3
+JavaScript ES6+
+Chrome Extension Manifest V3
+Chrome Extension APIs
+```
+
+No Node.js backend is required.
+
+No Python backend is required.
+
+No database server is required.
+
+No Firebase backend is required.
+
+The architecture is intentionally lightweight and local-first.
 
 ---
 
@@ -937,54 +1308,21 @@ Black Hole
 
 Contributions are welcome.
 
-### 1. Fork the repository
+When contributing:
 
-```bash
-git fork
-```
-
-### 2. Clone it
-
-```bash
-git clone https://github.com/YOUR-USERNAME/black-hole.git
-```
-
-### 3. Create a branch
-
-```bash
-git checkout -b feature/new-feature
-```
-
-### 4. Make your changes
-
-Test the extension thoroughly in Chrome.
-
-### 5. Commit
-
-```bash
-git add .
-git commit -m "Add new feature"
-```
-
-### 6. Push
-
-```bash
-git push origin feature/new-feature
-```
-
-### 7. Create a Pull Request
-
-Describe:
-
-* What was changed
-* Why it was changed
-* How it was tested
+1. Keep the existing architecture clean.
+2. Avoid unnecessary dependencies.
+3. Preserve local-first functionality.
+4. Do not introduce unnecessary permissions.
+5. Test changes against existing capsule functionality.
+6. Do not break other capsules when modifying one capsule.
+7. Maintain Chrome Manifest V3 compatibility.
 
 ---
 
 # 📜 License
 
-Choose a license appropriate for your project before publishing.
+Add your preferred open-source license before publishing the project publicly.
 
 For example:
 
@@ -992,34 +1330,22 @@ For example:
 MIT License
 ```
 
-If using MIT, add a `LICENSE` file containing the official MIT License text.
-
 ---
 
 # 👨‍💻 Author
 
 **Harish**
 
-Computer Science & Business Systems
-
----
-
-# ⭐ Support the Project
-
-If you find **Black Hole** useful:
-
-⭐ Star the repository
-🍴 Fork the project
-🐛 Report bugs
-💡 Suggest features
-🤝 Contribute improvements
+Computer Science and Business Systems
 
 ---
 
 # 🕳️ Black Hole
 
-> **Your tabs disappear. Your workspace doesn't.**
+### Save your workspace.
 
-**Save it. Close it. Come back later.**
+### Continue your work.
 
----
+### Reopen everything when you need it.
+
+> **Black Hole — Your browser workspace, preserved.**
